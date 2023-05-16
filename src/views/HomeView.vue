@@ -18,13 +18,13 @@ export default {
       ayah: [],
       audio: null,
       namaSurah: null,
-      inputNomor: "",
+      // inputNomor: "",
     };
   },
 
   methods: {
-    async submit() {
-      let nomor = this.inputNomor || 1;
+    async submit(event) {
+      let nomor = event.target.value
       let ayat = `https://api.quran.com/api/v4/quran/verses/uthmani?chapter_number=${nomor}`;
       let arti = "https://api.quran.com/api/v4/quran/translations/134?chapter_number=" + nomor;
 
@@ -85,7 +85,7 @@ export default {
     </div>
 
     <section class="search">
-      <input type="number" v-model="inputNomor" class="input" placeholder="Masukkan urutan surah" />
+      <input type="number" @input="submit" class="input" placeholder="Masukkan urutan surah" />
       <button class="btn btn-primary" type="submit">Cari</button>
     </section>
 
