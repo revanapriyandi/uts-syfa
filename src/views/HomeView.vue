@@ -31,7 +31,7 @@ export default {
       let judul = "https://api.quran.com/api/v4/chapters?language=en";
       let suara = "https://api.quran.com/api/v4/chapter_recitations/2?language=en";
 
-      if (nomor === 0 || nomor > 114) {
+      if (nomor <= 0 || nomor > 114) {
         alert("Nomor surah yang dimasukkan salah!");
       } else {
         const reqJudul = axios.get(judul);
