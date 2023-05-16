@@ -8,10 +8,10 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="/">Home</a>
+            <Link class="nav-link active" aria-current="page" href="/">Home</Link>
           </li>
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="about">About Developer</a>
+            <Link class="nav-link active" aria-current="page" href="about">About Developer</Link>
           </li>
         </ul>
       </div>
@@ -19,10 +19,12 @@
   </nav>
 </template>
 <script>
-
+import {Link} from 'vue-router'
 export default {
   name : 'Navbar',
-  components: {}
+  components: {
+    Link
+  }
 
 }
 </script>
