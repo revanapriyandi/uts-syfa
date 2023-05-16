@@ -18,6 +18,7 @@ export default {
       ayah: [],
       audio: null,
       namaSurah: null,
+      inputNomor: "",
     };
   },
 
