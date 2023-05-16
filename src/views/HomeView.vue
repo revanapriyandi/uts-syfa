@@ -9,6 +9,70 @@ onMounted(()=>{
 })
 </script>
 
+<script>
+import axios from "axios";
+
+export default {
+  data() {
+    return {
+      ayah: [],
+      audio: null,
+      namaSurah: null,
+      inputnomor: "",
+    };
+  },
+
+  methods: {
+    async submit() {
+      let nomor = this.inputnomor;
+      let ayat = `https://api.quran.com/api/v4/quran/verses/uthmani?chapter_number=${nomor}`;
+      let arti = "https://api.quran.com/api/v4/quran/translations/134?chapter_number=" + nomor;
+
+      let judul = "https://api.quran.com/api/v4/chapters?language=en";
+      let suara = "https://api.quran.com/api/v4/chapter_recitations/2?language=en";
+
+      if (nomor <= 0 || nomor > 114) {
+        alert("nomor surah yang dimasukkan salah!");
+      } else {
+        const reqJudul = axios.get(judul);
+        const reqAyat = axios.get(ayat);
+        const reqSuara = axios.get(suara);
+        const reqArti = axios.get(arti);
+
+        axios.all([reqAyat, reqArti, reqJudul, reqSuara]).then(
+          axios.spread((...response) => {
+            const responseAyat = response[0];
+            const responseArti = response[1];
+            const responseJudul = response[2];
+            const responseSuara = response[3];
+
+            const a = responseAyat.data.verses;
+            const b = responseArti.data.translations;
+
+            const gabung = (a, b) => {
+              const res = [];
+
+              for (let i = 0; i < a.length + b.length; i++) {
+                if (i % 2 === 0) {
+                  res.push(a[i / 2]);
+                } else {
+                  res.push(b[(i - 1) / 2]);
+                }
+              }
+              return res;
+            };
+
+            this.ayah = gabung(a, b);
+            this.audio = responseSuara.data.audio_files[nomor - 1];
+            this.namaSurah = responseJudul.data.chapters[nomor - 1];
+          })
+        );
+      }
+    },
+  },
+};
+</script>
+
 <template>
   <main>
     <Navbar/>
@@ -52,71 +116,6 @@ onMounted(()=>{
   </main>
 
 </template>
-
-<script>
-import axios from "axios";
-
-export default {
-  data() {
-    return {
-      ayah: [],
-      audio: null,
-      namaSurah: null,
-      inputnomor: "",
-    };
-  },
-
-  methods: {
-    async submit() {
-      let nomor = this.inputnomor;
-      let ayat = `https://api.quran.com/api/v4/quran/verses/uthmani?chapter_number=${nomor}`;
-      let arti = "https://api.quran.com/api/v4/quran/translations/134?chapter_number=" + nomor;
-
-      let judul = "https://api.quran.com/api/v4/chapters?language=en";
-      let suara = "https://api.quran.com/api/v4/chapter_recitations/2?language=en";
-
-      if (nomor <= 0 || nomor > 114) {
-        alert("nomor surah yang dimasukkan salah!");
-      } else {
-        const reqJudul = axios.get(judul);
-        const reqAyat = axios.get(ayat);
-        const reqSuara = axios.get(suara);
-        const reqArti = axios.get(arti);
-
-        axios.all([reqAyat, reqArti, reqJudul, reqSuara]).then(
-            axios.spread((...response) => {
-              const responseAyat = response[0];
-              const responseArti = response[1];
-              const responseJudul = response[2];
-              const responseSuara = response[3];
-
-              const a = responseAyat.data.verses;
-              const b = responseArti.data.translations;
-
-              const gabung = (a, b) => {
-                const res = [];
-
-                for (let i = 0; i < a.length + b.length; i++) {
-                  if (i % 2 === 0) {
-                    res.push(a[i / 2]);
-                  } else {
-                    res.push(b[(i - 1) / 2]);
-                  }
-                }
-                return res;
-              };
-
-              this.ayah = gabung(a, b);
-              this.audio = responseSuara.data.audio_files[nomor - 1];
-              this.namaSurah = responseJudul.data.chapters[nomor - 1];
-            })
-        );
-      }
-    },
-  },
-};
-</script>
-
 
 <style>
 .jdl{
