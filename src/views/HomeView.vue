@@ -1,12 +1,12 @@
 <script setup>
 import Navbar from "../components/Navbar.vue";
+import { onMounted, ref } from "vue";
 
-import { onMounted } from "vue";
-
-onMounted(()=>{
-  document.getElementsByTagName("body")[0].style.backgroundImage = "Url('src/assets/bghome.jpg')"
+onMounted(() => {
+  document.getElementsByTagName("body")[0].style.backgroundImage =
+    "Url('src/assets/bghome.jpg')";
   document.getElementsByTagName("body")[0].style.backgroundSize = "cover";
-})
+});
 </script>
 
 <script>
@@ -18,14 +18,18 @@ export default {
       ayah: [],
       audio: null,
       namaSurah: null,
-      inputNomor: "",
     };
   },
 
-  methods: {
-    async submit(nomor) {
+  setup() {
+    const inputNomor = ref("");
+
+    const submit = async () => {
+      let nomor = inputNomor.value;
       let ayat = `https://api.quran.com/api/v4/quran/verses/uthmani?chapter_number=${nomor}`;
-      let arti = "https://api.quran.com/api/v4/quran/translations/134?chapter_number=" + nomor;
+      let arti =
+        "https://api.quran.com/api/v4/quran/translations/134?chapter_number=" +
+        nomor;
 
       let judul = "https://api.quran.com/api/v4/chapters?language=en";
       let suara = "https://api.quran.com/api/v4/chapter_recitations/2?language=en";
@@ -38,8 +42,9 @@ export default {
         const reqSuara = axios.get(suara);
         const reqArti = axios.get(arti);
 
-        axios.all([reqAyat, reqArti, reqJudul, reqSuara]).then(
-          axios.spread((...response) => {
+        axios
+          .all([reqAyat, reqArti, reqJudul, reqSuara])
+          .then(axios.spread((...response) => {
             const responseAyat = response[0];
             const responseArti = response[1];
             const responseJudul = response[2];
@@ -64,10 +69,14 @@ export default {
             this.ayah = gabung(a, b);
             this.audio = responseSuara.data.audio_files[nomor - 1];
             this.namaSurah = responseJudul.data.chapters[nomor - 1];
-          })
-        );
+          }));
       }
-    },
+    };
+
+    return {
+      inputNomor,
+      submit,
+    };
   },
 };
 </script>
@@ -85,7 +94,7 @@ export default {
 
     <section class="search">
       <input type="number" v-model="inputNomor" class="input" placeholder="Masukkan urutan surah" />
-      <button class="btn btn-primary" @click="submit(inputNomor)" type="submit">Cari</button>
+      <button class="btn btn-primary" @click="submit" type="submit">Cari</button>
     </section>
 
     <section class="container my-5">
