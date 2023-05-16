@@ -24,15 +24,15 @@ export default {
 
   methods: {
     async submit(event) {
-      let nomor = event.target.value
+      let nomor = event.target.value || 1;
       let ayat = `https://api.quran.com/api/v4/quran/verses/uthmani?chapter_number=${nomor}`;
       let arti = "https://api.quran.com/api/v4/quran/translations/134?chapter_number=" + nomor;
 
       let judul = "https://api.quran.com/api/v4/chapters?language=en";
       let suara = "https://api.quran.com/api/v4/chapter_recitations/2?language=en";
 
-      if (nomor <= 0 || nomor > 114) {
-        alert("nomor surah yang dimasukkan salah!");
+      if (nomor === 0 || nomor > 114) {
+        alert("Nomor surah yang dimasukkan salah!");
       } else {
         const reqJudul = axios.get(judul);
         const reqAyat = axios.get(ayat);
